@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Dein Buch. Fertig. Mit KI. Mit bookgenerator.ai schreibst und veröffentlichst du dein eigenes Buch in wenigen Stunden.">
+<meta property="og:title" content="bookgenerator.ai · Dein Buch. Fertig. Mit KI.">
+<meta property="og:description" content="Von der Idee bis zum fertigen Buch, in jedem Genre, mit deiner Stimme.">
+<link rel="icon" href="logo.png">
+<title>bookgenerator.ai · Dein Buch in Stunden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#f8f9ff;
+  --surface:#ffffff;
+  --low:#eff4ff;
+  --high:#dce9ff;
+  --ink:#102484;
+  --ink-2:#1d58d8;
+  --cyan:#15adde;
+  --purple:#6b38d4;
+  --purple-soft:#e9ddff;
+  --purple-ink:#5516be;
+  --text:#0b1c30;
+  --muted:#45506a;
+  --subtle:#7a849c;
+  --grad:linear-gradient(100deg,#102484 0%,#1d58d8 50%,#15adde 100%);
+  --shadow:0 20px 40px rgba(16,36,132,.07),0 2px 8px rgba(16,36,132,.04);
+  --shadow-lift:0 30px 60px rgba(16,36,132,.12),0 4px 12px rgba(16,36,132,.06);
+  --f-display:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  color-scheme:light;
+}
+html,body{height:100%;background:var(--bg);color:var(--text)}
+body{margin:0;overflow:hidden;font-family:var(--f-body);-webkit-font-smoothing:antialiased}
+.deck{position:fixed;inset:0;overflow:hidden;background:var(--bg)}
+.aura{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;animation:drift 22s ease-in-out infinite alternate}
+.aura.a1{width:70vmax;height:70vmax;right:-22vmax;top:-30vmax;background:radial-gradient(circle,rgba(107,56,212,.16),transparent 62%)}
+.aura.a2{width:60vmax;height:60vmax;left:-20vmax;bottom:-30vmax;background:radial-gradient(circle,rgba(21,173,222,.18),transparent 62%);animation-delay:-11s}
+.aura.a3{width:40vmax;height:40vmax;left:35%;top:20%;background:radial-gradient(circle,rgba(233,221,255,.55),transparent 65%);animation-duration:30s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(4vmax,3vmax) scale(1.08)}}
+.stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform:translate(-50%,-50%) scale(.5);transform-origin:center;z-index:1}
+.slide{position:absolute;inset:0;padding:96px 128px 136px;display:flex;flex-direction:column;gap:40px;opacity:0;visibility:hidden;transition:opacity .55s var(--ease),visibility 0s linear .55s}
+.slide.active{opacity:1;visibility:visible;transition:opacity .55s var(--ease)}
+.logo{display:block;height:52px;aspect-ratio:450/94;background:url(logo.png) no-repeat left center/contain}
+.brandline{position:absolute;left:128px;bottom:40px}
+.brandline .logo{height:60px}
+.brand{color:#000;font-weight:800}
+.claim{margin-top:56px;display:flex;align-items:center;gap:28px;padding:30px 40px;border-radius:24px;background:var(--surface);box-shadow:var(--shadow);max-width:1500px}
+.claim b{flex:none;font:800 30px/1.2 var(--f-display);letter-spacing:-.02em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.claim i{flex:none;font-style:normal;font:700 30px/1 var(--f-body);color:var(--purple)}
+.claim span{font:500 26px/1.45 var(--f-body);color:var(--text)}
+.play .claim{animation:rise .8s var(--ease) 3s both}
+.s-end .title{font-size:72px;max-width:1600px}
+.s-end{gap:30px}
+.audience{margin:0;display:flex;align-items:center;gap:14px;font:600 25px/1.3 var(--f-display);color:var(--ink)}
+.foot{position:absolute;left:470px;bottom:62px;font:500 18px/1 var(--f-body);color:var(--subtle)}
+.kicker{display:inline-flex;align-items:center;gap:14px;padding:12px 22px;border-radius:999px;background:var(--purple-soft);color:var(--purple-ink);font:600 19px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;width:max-content}
+.kicker::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--purple)}
+.title{margin:0;font:800 92px/1.04 var(--f-display);letter-spacing:-.035em;max-width:1300px;text-wrap:balance;color:var(--text)}
+.title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.title.xl{font-size:142px;line-height:.98;letter-spacing:-.045em}
+.lead{margin:0;font:400 30px/1.55 var(--f-body);color:var(--muted);max-width:900px;text-wrap:pretty}
+.lead strong{color:var(--text);font-weight:600}
+.head{display:flex;flex-direction:column;gap:28px}
+.split{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:88px;align-items:center;min-height:0}
+.split.wl{grid-template-columns:1.12fr .88fr}
+.split.wr{grid-template-columns:.88fr 1.12fr}
+.col{display:flex;flex-direction:column;gap:34px;min-width:0}
+.art{display:flex;align-items:center;justify-content:center;min-width:0;position:relative}
+.art svg{width:100%;height:auto;overflow:visible}
+.card{background:var(--surface);border-radius:24px;box-shadow:var(--shadow)}
+.cta{display:inline-flex;align-items:center;gap:16px;padding:27px 42px;border-radius:999px;background:var(--grad);color:#fff;font:700 26px/1 var(--f-display);text-decoration:none;box-shadow:0 20px 40px rgba(16,36,132,.22);width:max-content}
+.cta span{display:inline-block;transition:transform .3s var(--ease)}
+.cta:hover span{transform:translateX(6px)}
+.chip{display:inline-flex;align-items:center;gap:12px;padding:14px 22px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow);font:500 20px/1 var(--f-body);color:var(--text);width:max-content}
+.chip.ai{background:var(--purple-soft);color:var(--purple-ink);box-shadow:none}
+.live{position:relative;width:12px;height:12px;border-radius:50%;background:var(--cyan);flex:none}
+.live::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--cyan);animation:ring 2.2s var(--ease) infinite}
+@keyframes ring{from{transform:scale(1);opacity:.9}to{transform:scale(3.2);opacity:0}}
+.t-lbl{font-family:var(--f-body);font-weight:600;font-size:16px;letter-spacing:.08em;fill:var(--purple);text-transform:uppercase}
+.t-body{font-family:var(--f-body);font-size:21px;font-weight:500;fill:var(--text)}
+.t-sub{font-family:var(--f-body);font-weight:600;font-size:16px;letter-spacing:.08em;fill:var(--subtle);text-transform:uppercase}
+.play .rise{animation:rise .75s var(--ease) both;animation-delay:calc(var(--d,0)*1s)}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.play .blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.ink{fill:none;stroke:url(#gInk);stroke-width:5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
+.play .writing .ink{animation:write 7.5s var(--ease) infinite;animation-delay:calc(var(--i)*.34s)}
+@keyframes write{0%{stroke-dashoffset:1;opacity:1}26%{stroke-dashoffset:0}84%{stroke-dashoffset:0;opacity:1}94%{opacity:0}100%{stroke-dashoffset:1;opacity:0}}
+.play .sparkle{animation:spark 3.2s ease-in-out infinite;animation-delay:calc(var(--i)*-.8s);transform-box:fill-box;transform-origin:center}
+@keyframes spark{0%,100%{opacity:0;transform:scale(.4) translateY(0)}50%{opacity:1;transform:scale(1) translateY(-18px)}}
+.s-title .split{grid-template-columns:1.25fr .75fr;gap:40px}
+.s-title .meta{display:flex;flex-wrap:wrap;gap:20px;align-items:center}
+.s-title .art{transform:translateX(20px) scale(1.12)}
+.s-title .toplogo{height:76px}
+.s-title .brandline{display:none}
+.m-body{fill:url(#gMount)}
+.play .m-body{animation:mUp 1.6s var(--ease) both}
+@keyframes mUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.m-back{fill:url(#gMountBack)}
+.m-snow{fill:#fff}
+.play .m-snow{animation:rise .8s var(--ease) 1.2s both}
+.route{fill:none;stroke:#fff;stroke-width:3.5;stroke-dasharray:3 13;stroke-linecap:round;opacity:.9}
+.camp{fill:#fff;stroke:var(--cyan);stroke-width:4}
+.play .campg{animation:rise .6s var(--ease) both;animation-delay:calc(1.3s + var(--i)*.3s)}
+.lbl-bg{fill:#fff;filter:drop-shadow(0 10px 18px rgba(16,36,132,.1))}
+.flag{fill:var(--purple);transform-box:fill-box;transform-origin:left center}
+.play .flag{animation:wave 1.4s ease-in-out infinite alternate}
+@keyframes wave{from{transform:skewY(-6deg) scaleX(.92)}to{transform:skewY(5deg) scaleX(1.05)}}
+.s-quote{justify-content:center}
+.quote{margin:0;font:700 78px/1.08 var(--f-display);letter-spacing:-.035em;max-width:1600px;text-wrap:balance;color:var(--subtle)}
+.strike{background:linear-gradient(var(--purple),var(--purple)) no-repeat 0 58%/100% 8px}
+.play .strike{animation:strike 1.1s var(--ease) .9s both}
+@keyframes strike{from{background-size:0% 8px}to{background-size:100% 8px}}
+.answer{font:800 160px/1.05 var(--f-display);letter-spacing:-.05em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:10px;width:max-content}
+.play .answer{animation:rise .8s var(--ease) 2.1s both}
+.play .s-quote .lead{animation:rise .8s var(--ease) 2.5s both}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.stat{padding:30px 30px;display:flex;flex-direction:column;gap:12px}
+.stat .n{font:800 86px/1 var(--f-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.stat .n span{color:var(--cyan)}
+.stat .l{font:400 21px/1.4 var(--f-body);color:var(--muted)}
+.who{display:flex;flex-wrap:wrap;gap:12px}
+.play .who .chip{animation:rise .5s var(--ease) both;animation-delay:calc(.9s + var(--i)*.1s)}
+.spine-t{font-family:var(--f-body);font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+.play .bk{animation:drop .6s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(var(--i)*.08s)}
+@keyframes drop{from{transform:translateY(-110px);opacity:0}to{transform:none;opacity:1}}
+.objs{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.obj{padding:30px 34px;display:flex;flex-direction:column;gap:22px;justify-content:space-between}
+.obj q{font:500 27px/1.38 var(--f-body);color:var(--text);quotes:"„" "“"}
+.tag{display:flex;align-items:center;gap:12px;font:600 18px/1 var(--f-body);color:var(--ink)}
+.chk{width:34px;height:34px;border-radius:50%;background:var(--grad);display:grid;place-items:center;flex:none}
+.chk svg{width:17px;height:17px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.play .obj .tag{animation:tagIn .6s var(--ease) both;animation-delay:calc(.7s + var(--i)*.26s)}
+@keyframes tagIn{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+.tl{position:relative;display:grid;grid-template-columns:repeat(5,1fr);margin-top:30px}
+.tl-line{position:absolute;left:16px;right:60px;top:115px;height:6px;border-radius:6px;background:var(--high)}
+.tl-fill{position:absolute;inset:0;border-radius:6px;background:var(--grad);transform-origin:left}
+.play .tl-fill{animation:fill 3s var(--ease) .4s both}
+@keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.tl-orb{position:absolute;top:-9px;left:0;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(21,173,222,.35),0 0 30px 10px rgba(107,56,212,.35)}
+.play .tl-orb{animation:orbRun 3s var(--ease) .4s both}
+@keyframes orbRun{from{left:0}to{left:calc(100% - 12px)}}
+.node{position:relative;display:flex;flex-direction:column;gap:14px;padding-right:30px}
+.node .no{font:800 80px/1 var(--f-display);letter-spacing:-.04em;color:var(--high);height:80px}
+.node .dot{width:34px;height:34px;border-radius:50%;margin:4px 0 14px;background:#fff;box-shadow:inset 0 0 0 4px var(--cyan),var(--shadow);position:relative;z-index:1}
+.node.last .dot{box-shadow:inset 0 0 0 4px var(--purple),var(--shadow)}
+.node .what{font:700 29px/1.25 var(--f-display);letter-spacing:-.015em}
+.node .sub{font:400 21px/1.45 var(--f-body);color:var(--muted)}
+.play .node{animation:rise .7s var(--ease) both;animation-delay:calc(.3s + var(--i)*.5s)}
+.play .node .no{animation:noOn .6s var(--ease) both;animation-delay:calc(.6s + var(--i)*.5s)}
+@keyframes noOn{to{color:var(--ink)}}
+.blocks{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.blk{padding:26px 30px;display:flex;flex-direction:column;gap:10px}
+.blk .k{font:600 15px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--purple)}
+.blk h3{margin:0;font:700 28px/1.2 var(--f-display);letter-spacing:-.015em}
+.blk p{margin:0;font:400 21px/1.45 var(--f-body);color:var(--muted)}
+.blk.span{grid-column:1/-1}
+.play .blk{animation:rise .6s var(--ease) both;animation-delay:calc(.25s + var(--i)*.13s)}
+.conv{position:relative;width:620px;height:660px}
+.conv-doc{position:absolute;left:70px;top:20px;width:470px;height:610px;border-radius:24px;background:var(--surface);box-shadow:var(--shadow-lift)}
+.conv-back{position:absolute;left:90px;top:40px;width:470px;height:610px;border-radius:24px;background:var(--high)}
+.conv-doc .dh{position:absolute;left:40px;top:40px;font:800 30px/1 var(--f-display);letter-spacing:-.02em;color:var(--ink)}
+.conv-doc .dr{position:absolute;left:40px;width:120px;top:86px;height:5px;border-radius:5px;background:var(--grad)}
+.play .conv-doc .dh,.play .conv-doc .dr{animation:rise .6s var(--ease) 1.9s both}
+.note{position:absolute;left:110px;height:48px;border-radius:999px;background:var(--low);display:flex;align-items:center;gap:12px;padding:0 22px;font:500 19px/1 var(--f-body);color:var(--text);white-space:nowrap}
+.note::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--cyan)}
+.note.ai{background:var(--purple-soft);color:var(--purple-ink)}
+.note.ai::before{background:var(--purple)}
+.play .note{animation:converge 1.5s var(--ease) both;animation-delay:calc(.3s + var(--i)*.1s)}
+@keyframes converge{from{transform:translate(var(--sx),var(--sy)) rotate(var(--r));box-shadow:var(--shadow-lift)}to{transform:none;box-shadow:none}}
+.bar{fill:url(#gInkV);transform-box:fill-box;transform-origin:center}
+.play .bar{animation:wv 1.1s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.13s)}
+@keyframes wv{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+.flow{fill:none;stroke:var(--subtle);stroke-width:2.5;stroke-dasharray:6 8}
+.play .flow{animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-28}}
+.sliders{display:flex;flex-direction:column;gap:22px;width:100%;padding:32px 36px;box-sizing:border-box}
+.sl{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center}
+.sl .nm{font:600 17px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sl .tr{position:relative;height:8px;border-radius:8px;background:var(--high)}
+.sl .tr i{position:absolute;left:0;top:0;bottom:0;border-radius:8px;background:var(--grad);width:var(--a)}
+.sl .tr b{position:absolute;top:50%;left:var(--a);width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(107,56,212,.2),0 6px 14px rgba(16,36,132,.2)}
+.sl .ends{grid-column:2;display:flex;justify-content:space-between;font:400 17px/1 var(--f-body);color:var(--subtle);margin-top:-8px}
+.play .sl .tr i{animation:slw 6s var(--ease) infinite;animation-delay:calc(var(--i)*-1.7s)}
+.play .sl .tr b{animation:slk 6s var(--ease) infinite;animation-delay:calc(var(--i)*-1.7s)}
+@keyframes slw{0%,100%{width:var(--a)}50%{width:var(--b)}}
+@keyframes slk{0%,100%{left:var(--a)}50%{left:var(--b)}}
+.play .c-in{animation:rise .6s var(--ease) both;animation-delay:calc(var(--d)*1s)}
+.chan rect{fill:#fff;filter:drop-shadow(0 10px 18px rgba(16,36,132,.1))}
+.chan text{font-family:var(--f-body);font-weight:600;font-size:19px;fill:var(--ink)}
+.chan circle{fill:var(--cyan)}
+.play .cover-shine{animation:shine 4s ease-in-out 2s infinite}
+@keyframes shine{0%{transform:translateX(-260px)}40%,100%{transform:translateX(320px)}}
+.ticker{position:relative;height:620px;width:660px;overflow:hidden;mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);-webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent)}
+.ticker ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;position:relative;z-index:1}
+.ticker li{height:88px;display:flex;align-items:center;gap:24px;padding-left:28px;font:700 40px/1 var(--f-display);letter-spacing:-.025em;color:var(--text);white-space:nowrap}
+.ticker li span{font:600 16px/1 var(--f-body);color:var(--purple);letter-spacing:.08em;width:40px}
+.play .ticker ul{animation:tick 24s linear infinite}
+@keyframes tick{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+.lens{position:absolute;left:0;right:0;top:266px;height:88px;border-radius:24px;background:var(--surface);box-shadow:var(--shadow-lift)}
+.lens::before{content:"";position:absolute;left:0;top:20px;bottom:20px;width:6px;border-radius:6px;background:var(--grad)}
+.edit{width:880px;padding:42px 48px;display:flex;flex-direction:column;gap:30px}
+.edit .tabs{display:flex;gap:12px;flex-wrap:wrap}
+.edit .tab{padding:14px 22px;border-radius:999px;background:var(--low);font:600 19px/1 var(--f-body);color:var(--muted);transition:all .4s var(--ease)}
+.edit .tab.on{background:var(--purple-soft);color:var(--purple-ink)}
+.edit .tab.orig.on{background:var(--ink);color:#fff}
+.edit .txt{min-height:190px;font:700 44px/1.3 var(--f-display);letter-spacing:-.025em;color:var(--text);transition:opacity .35s var(--ease),transform .35s var(--ease)}
+.edit .txt.out{opacity:0;transform:translateY(10px)}
+.edit .note2{display:flex;align-items:center;gap:12px;font:400 20px/1.4 var(--f-body);color:var(--muted);background:var(--low);padding:16px 20px;border-radius:16px}
+.edit .note2 i{width:10px;height:10px;border-radius:50%;background:var(--cyan);flex:none}
+.bars{display:flex;flex-direction:column;gap:22px}
+.hb{display:flex;flex-direction:column;gap:11px}
+.hb .row{display:flex;justify-content:space-between;align-items:baseline;gap:20px}
+.hb .lbl{font:700 27px/1.25 var(--f-display);letter-spacing:-.015em}
+.hb .lbl span{display:block;font:400 20px/1.4 var(--f-body);color:var(--muted);margin-top:4px;letter-spacing:0}
+.hb .val{font:600 16px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--purple);flex:none}
+.track{height:10px;border-radius:999px;background:var(--high);overflow:hidden}
+.track i{display:block;height:100%;width:100%;background:var(--grad);border-radius:999px;transform-origin:left}
+.play .track i{animation:grow 1.2s var(--ease) both;animation-delay:calc(.4s + var(--i)*.22s)}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.scene3d{perspective:1800px;width:560px;height:660px;display:grid;place-items:center;position:relative}
+.book3d{position:relative;width:340px;height:480px;transform-style:preserve-3d;transform:rotateY(-28deg) rotateX(8deg)}
+.play .book3d{animation:spin 9s ease-in-out infinite}
+@keyframes spin{0%,100%{transform:rotateY(-34deg) rotateX(10deg)}50%{transform:rotateY(-10deg) rotateX(4deg)}}
+.book3d>div{position:absolute;inset:0;border-radius:4px 12px 12px 4px}
+.b-front{background:linear-gradient(150deg,#ffffff 0%,#d9f2ff 30%,#7fd0f0 62%,#1d58d8 100%);transform:translateZ(30px);display:flex;flex-direction:column;justify-content:space-between;padding:46px 38px;overflow:hidden;box-shadow:inset 8px 0 14px rgba(16,36,132,.25)}
+.b-front .bt{font:800 58px/1 var(--f-display);letter-spacing:-.04em;color:var(--ink);position:relative}
+.b-front .bt em{font-style:normal;color:#1d58d8}
+.b-front .ba{font:600 18px/1 var(--f-body);letter-spacing:.12em;color:#fff;text-transform:uppercase;position:relative}
+.b-front .glow{position:absolute;inset:0;background:radial-gradient(circle at 70% 35%,rgba(255,255,255,.7),transparent 45%)}
+.b-pages{background:repeating-linear-gradient(90deg,#fff 0 3px,#dfe6f3 3px 4px);width:60px!important;left:280px!important;transform:rotateY(90deg) translateZ(30px);border-radius:0!important}
+.b-spine{background:linear-gradient(90deg,#102484,#1d58d8);width:60px!important;transform:rotateY(-90deg) translateZ(30px);border-radius:0!important}
+.b-back{background:#102484;transform:translateZ(-30px) rotateY(180deg)}
+.shadow3d{position:absolute;bottom:50px;width:420px;height:50px;border-radius:50%;background:radial-gradient(rgba(16,36,132,.25),transparent 70%)}
+.bad{padding:32px 34px;display:flex;flex-direction:column;gap:18px}
+.bad .k{font:600 15px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--subtle)}
+.prompt{font:500 27px/1.4 var(--f-body);color:var(--text);padding:22px 24px;border-radius:16px;background:var(--low)}
+.bad p{margin:0;font:400 23px/1.45 var(--f-body);color:var(--muted)}
+.step-face{fill:#fff;filter:drop-shadow(0 14px 22px rgba(16,36,132,.08))}
+.tread{stroke:#dce9ff;stroke-width:6;stroke-linecap:round}
+.play .tread{animation:treadOn 7.5s linear infinite;animation-delay:calc(var(--i)*1.25s)}
+@keyframes treadOn{0%,15%{stroke:#15adde}17%,100%{stroke:#dce9ff}}
+.hop{fill:url(#gOrb);filter:url(#glow);transform:translate(600px,50px)}
+.play .hop{animation:hop 7.5s var(--ease) infinite}
+@keyframes hop{
+  0%,13%{transform:translate(88px,320px)}
+  17%,30%{transform:translate(192px,266px)}
+  33%,46%{transform:translate(294px,212px)}
+  50%,63%{transform:translate(396px,158px)}
+  67%,80%{transform:translate(498px,104px)}
+  83%,96%{transform:translate(604px,50px)}
+  100%{transform:translate(88px,320px)}}
+.proj{position:relative;width:660px;border-radius:28px;background:rgba(255,255,255,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow-lift);padding:36px 38px;display:flex;flex-direction:column;gap:28px;box-sizing:border-box}
+.play .proj{animation:projGlow 1s var(--ease) 2.2s both}
+@keyframes projGlow{to{box-shadow:0 30px 80px rgba(107,56,212,.22),0 0 0 3px rgba(21,173,222,.35)}}
+.proj .ph{display:flex;align-items:center;gap:18px;font:800 32px/1 var(--f-display);letter-spacing:-.02em}
+.proj .ph .chip{margin-left:auto}
+.fchips{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fchip{display:flex;align-items:center;gap:14px;padding:20px 22px;border-radius:18px;background:var(--low);font:500 22px/1.2 var(--f-body)}
+.fchip svg{width:24px;height:24px;stroke:var(--ink-2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.play .fchip{animation:fall .8s cubic-bezier(.3,1.35,.5,1) both;animation-delay:calc(.3s + var(--i)*.22s)}
+@keyframes fall{from{transform:translateY(-280px);opacity:0}30%{opacity:1}to{transform:none;opacity:1}}
+.setup{display:flex;flex-direction:column;gap:16px}
+.setup div{display:grid;grid-template-columns:48px 1fr;gap:16px;font:400 25px/1.45 var(--f-body);color:var(--muted)}
+.setup .num{font:800 20px/1 var(--f-display);color:var(--purple);padding-top:9px}
+.setup strong{color:var(--text);font-weight:600}
+.s-start{justify-content:center}
+.typebox{width:1300px;padding:42px 48px;display:flex;flex-direction:column;gap:24px}
+.typebox .k{display:flex;align-items:center;gap:14px;font:600 17px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.typed{font:500 36px/1.5 var(--f-body);color:var(--text);min-height:3em}
+.caret{display:inline-block;width:4px;height:1.1em;background:var(--cyan);vertical-align:-.18em;margin-left:4px;animation:blink 1s steps(1) infinite}
+.gen{display:flex;gap:12px;flex-wrap:wrap;opacity:0}
+.gen.show{opacity:1;transition:opacity .5s var(--ease)}
+.gen .chip{font-size:19px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.plan{padding:34px 34px 36px;display:flex;flex-direction:column;gap:18px;position:relative}
+.plan.hot{box-shadow:0 30px 70px rgba(16,36,132,.16),0 0 0 3px rgba(21,173,222,.45)}
+.plan .badge{position:absolute;top:-18px;right:30px;padding:10px 16px;border-radius:999px;background:var(--purple);color:#fff;font:700 15px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase}
+.plan .nm{font:600 18px/1 var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--purple)}
+.plan .pr{font:800 74px/1 var(--f-display);letter-spacing:-.04em;color:var(--ink)}
+.plan .pr small{font:400 22px/1 var(--f-body);color:var(--muted);margin-left:6px;letter-spacing:0}
+.plan ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.plan li{display:grid;grid-template-columns:32px 1fr;gap:12px;font:400 21px/1.35 var(--f-body);color:var(--muted)}
+.box{width:26px;height:26px;border-radius:8px;background:var(--grad);display:grid;place-items:center;margin-top:1px}
+.box svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:0}
+.play .box{animation:boxOn .4s var(--ease) both;animation-delay:calc(.6s + var(--i)*.12s)}
+.play .box svg{animation:cdraw .5s var(--ease) both;animation-delay:calc(.7s + var(--i)*.12s)}
+@keyframes boxOn{from{opacity:.25;transform:scale(.7)}to{opacity:1;transform:none}}
+@keyframes cdraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.endrow{display:flex;align-items:center;gap:30px;flex-wrap:wrap}
+.endrow p{margin:0;font:400 22px/1.4 var(--f-body);color:var(--muted)}
+.ctrl{position:fixed;right:max(16px,2vw);bottom:calc(max(12px,1.6vh) + env(safe-area-inset-bottom,0px));z-index:10;display:flex;align-items:center;gap:6px;padding:6px;border-radius:999px;background:rgba(255,255,255,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow);opacity:.75;transition:opacity .25s var(--ease)}
+.ctrl:hover,.ctrl:focus-within{opacity:1}
+.ctrl button{width:42px;height:42px;border-radius:50%;border:0;background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.ctrl button:hover{background:var(--low)}
+.ctrl button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.ctrl button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.ctrl svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.count{font:600 13px/1 var(--f-body);letter-spacing:.08em;color:var(--muted);padding:0 6px;font-variant-numeric:tabular-nums;min-width:62px;text-align:center}
+.prog{position:fixed;left:0;bottom:0;height:4px;background:var(--grad);z-index:10;transition:width .5s var(--ease)}
+.auto-bar{position:fixed;left:0;top:0;height:4px;width:0;background:var(--purple);z-index:10}
+body.clean .ctrl,body.clean .prog,body.clean .auto-bar{display:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gInk" gradientUnits="userSpaceOnUse" x1="350" x2="600" y1="0" y2="0"><stop offset="0" stop-color="#102484"/><stop offset=".55" stop-color="#1d58d8"/><stop offset="1" stop-color="#15adde"/></linearGradient>
+    <linearGradient id="gInkV" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#15adde"/><stop offset="1" stop-color="#6b38d4"/></linearGradient>
+    <linearGradient id="gMount" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#102484"/><stop offset=".55" stop-color="#1d58d8"/><stop offset="1" stop-color="#7fd0f0"/></linearGradient>
+    <linearGradient id="gMountBack" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#c9b6f5"/><stop offset="1" stop-color="#eef1ff"/></linearGradient>
+    <radialGradient id="gOrb"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#bfeeff"/><stop offset="1" stop-color="#15adde"/></radialGradient>
+    <linearGradient id="gPage" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eef3fc"/></linearGradient>
+    <filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b"/><feFlood flood-color="#6b38d4" flood-opacity=".55"/><feComposite in2="b" operator="in" result="p"/><feMerge><feMergeNode in="p"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="24" stdDeviation="22" flood-color="#102484" flood-opacity=".12"/></filter>
+  </defs>
+</svg>
+<div class="deck" id="deck">
+<div class="aura a1"></div><div class="aura a2"></div><div class="aura a3"></div>
+<div class="stage" id="stage">
+<!-- 01 TITEL -->
+<section class="slide s-title active play" data-name="start" aria-label="Dein Buch. Fertig. Mit KI.">
+  <div class="split">
+    <div class="col">
+      <span class="logo toplogo rise" role="img" aria-label="bookgenerator.ai"></span>
+      <h1 class="title xl rise" style="--d:.1">Dein Buch.<br>Fertig. <em>Mit KI.</em></h1>
+      <p class="lead rise" style="--d:.2">Von der ersten Idee bis zur druckfertigen Datei. In wenigen Stunden statt in Jahren, in jedem Genre, mit deiner Stimme.</p>
+      <div class="meta rise" style="--d:.3">
+        <a class="cta" href="https://bookgenerator.ai" target="_blank" rel="noopener">Kostenlos starten <span>→</span></a>
+        <span class="chip"><span class="live"></span>Monatlich kündbar · Made in Germany</span>
+      </div>
+    </div>
+    <div class="art rise" style="--d:.2">
+      <svg viewBox="0 0 640 460" class="writing" aria-hidden="true">
+        <ellipse cx="320" cy="418" rx="290" ry="20" fill="rgba(16,36,132,.12)"/>
+        <g filter="url(#soft)">
+        <path d="M320 74C250 52 110 52 36 74V400C110 378 250 378 320 400Z" fill="url(#gPage)"/>
+        <path d="M320 74C390 52 530 52 604 74V400C530 378 390 378 320 400Z" fill="url(#gPage)"/>
+        </g>
+        <path d="M320 74V400" stroke="#dce9ff" stroke-width="3"/>
+        <text x="78" y="120" style="font:800 24px var(--f-display);fill:#102484;letter-spacing:-.5px">Kapitel 1</text>
+        <rect x="78" y="134" width="70" height="5" rx="2.5" fill="#6b38d4"/>
+        <g stroke="rgba(11,28,48,.12)" stroke-width="5" stroke-linecap="round">
+          <line x1="78" y1="170" x2="280" y2="170"/><line x1="78" y1="196" x2="266" y2="196"/><line x1="78" y1="222" x2="284" y2="222"/><line x1="78" y1="248" x2="230" y2="248"/>
+          <line x1="78" y1="286" x2="278" y2="286"/><line x1="78" y1="312" x2="260" y2="312"/><line x1="78" y1="338" x2="200" y2="338"/>
+        </g>
+        <line class="ink" pathLength="1" style="--i:0" x1="360" y1="116" x2="566" y2="116"/>
+        <line class="ink" pathLength="1" style="--i:1" x1="360" y1="144" x2="578" y2="144"/>
+        <line class="ink" pathLength="1" style="--i:2" x1="360" y1="172" x2="548" y2="172"/>
+        <line class="ink" pathLength="1" style="--i:3" x1="360" y1="200" x2="574" y2="200"/>
+        <line class="ink" pathLength="1" style="--i:4" x1="360" y1="228" x2="512" y2="228"/>
+        <line class="ink" pathLength="1" style="--i:5" x1="360" y1="268" x2="570" y2="268"/>
+        <line class="ink" pathLength="1" style="--i:6" x1="360" y1="296" x2="556" y2="296"/>
+        <line class="ink" pathLength="1" style="--i:7" x1="360" y1="324" x2="470" y2="324"/>
+        <rect class="blink" x="480" y="312" width="5" height="24" rx="2" fill="#15adde"/>
+        <circle class="sparkle" style="--i:0" cx="590" cy="60" r="7" fill="#15adde" filter="url(#glow)"/>
+        <circle class="sparkle" style="--i:1" cx="622" cy="140" r="5" fill="#6b38d4"/>
+        <circle class="sparkle" style="--i:2" cx="556" cy="28" r="4" fill="#7fd0f0"/>
+        <circle class="sparkle" style="--i:3" cx="40" cy="48" r="6" fill="#6b38d4" filter="url(#glow)"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 02 BERG -->
+<section class="slide" data-name="gipfel" aria-label="Ein Buch wirkt wie ein Gipfel">
+  <div class="split wr">
+    <div class="col">
+      <div class="kicker rise">Das Gefühl kennen viele</div>
+      <h2 class="title rise" style="--d:.1">Ein Buch wirkt wie ein <em>Gipfel</em></h2>
+      <p class="lead rise" style="--d:.2">Niemand erreicht ihn in einem Sprung. Du brauchst eine Route und Lager auf dem Weg. <b class="brand">bookgenerator.ai</b> legt die Route für dich an und trägt das Gepäck.</p>
+    </div>
+    <div class="art">
+      <svg viewBox="0 0 900 560" aria-hidden="true">
+        <path class="m-back" d="M120 540L330 250L430 330L560 150L700 300L860 200L900 230L900 540Z" opacity=".8"/>
+        <path class="m-body" d="M0 540L170 360L250 410L410 190L490 260L610 70L720 220L800 170L900 540Z"/>
+        <path class="m-snow" d="M610 70L572 132L594 124L610 140L628 122L648 128Z"/>
+        <path id="routeP" class="route" d="M70 510Q180 500 270 440T450 300T560 170T610 82"/>
+        <g class="campg" style="--i:0"><circle class="camp" cx="270" cy="440" r="12"/><rect class="lbl-bg" x="292" y="452" width="190" height="72" rx="18"/><text x="312" y="482" class="t-lbl">Lager 1</text><text x="312" y="510" class="t-body">Idee &amp; Genre</text></g>
+        <g class="campg" style="--i:1"><circle class="camp" cx="450" cy="300" r="12"/><rect class="lbl-bg" x="474" y="312" width="180" height="72" rx="18"/><text x="494" y="342" class="t-lbl">Lager 2</text><text x="494" y="370" class="t-body">Gliederung</text></g>
+        <g class="campg" style="--i:2"><circle class="camp" cx="560" cy="170" r="12"/><rect class="lbl-bg" x="330" y="128" width="160" height="72" rx="18"/><text x="350" y="158" class="t-lbl">Lager 3</text><text x="350" y="186" class="t-body">Kapitel</text></g>
+        <g class="campg" style="--i:3"><line x1="610" y1="72" x2="610" y2="6" stroke="#102484" stroke-width="3.5"/><path class="flag" d="M612 8L656 20L612 32Z"/><rect class="lbl-bg" x="664" y="-6" width="230" height="72" rx="18"/><text x="684" y="24" class="t-lbl">Gipfel</text><text x="684" y="52" class="t-body">Dein fertiges Buch</text></g>
+        <circle r="20" fill="rgba(107,56,212,.25)"><animateMotion dur="6.5s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.82;1" calcMode="linear" begin=".15s"><mpath href="#routeP"/></animateMotion></circle>
+        <circle class="mover" r="11" fill="url(#gOrb)" filter="url(#glow)"><animateMotion dur="6.5s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.82;1" calcMode="linear"><mpath href="#routeP"/></animateMotion></circle>
+      </svg>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 03 ZITAT -->
+<section class="slide s-quote" data-name="zitat" aria-label="Ein Buch dauert Jahre? Nicht mehr.">
+  <div class="kicker rise">Der Satz, den fast jeder kennt</div>
+  <p class="quote rise" style="--d:.15"><span class="strike">„Ein Buch zu schreiben dauert Jahre.“</span></p>
+  <div class="answer">Heute: ein Nachmittag.</div>
+  <p class="lead" style="max-width:1150px">Du bringst die Idee und die Entscheidungen. Die KI schreibt mit, hält den roten Faden und liefert das fertige Manuskript. <strong>Du behältst die Feder.</strong></p>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 04 FÜR WEN -->
+<section class="slide" data-name="fuer-wen" aria-label="Für wen bookgenerator.ai gemacht ist">
+  <div class="split wl">
+    <div class="col">
+      <div class="kicker rise">Für wen?</div>
+      <h2 class="title rise" style="--d:.1">Für jedes Buch, das in dir <em>steckt</em></h2>
+      <div class="who" aria-label="Zielgruppen">
+        <span class="chip" style="--i:0">Hobby-Autor:innen</span><span class="chip" style="--i:1">Romanautor:innen</span><span class="chip" style="--i:2">Business-Autor:innen</span>
+        <span class="chip" style="--i:3">Firmenbücher</span><span class="chip" style="--i:4">Coaches &amp; Expert:innen</span><span class="chip" style="--i:5">Einsteiger:innen</span><span class="chip" style="--i:6">Profis, die skalieren</span>
+      </div>
+      <div class="stats">
+        <div class="stat card rise" style="--d:.3"><div class="n"><b data-count="32" style="font-weight:inherit">32</b><span>+</span></div><div class="l">Genres, vom Thriller bis zum Fachbuch</div></div>
+        <div class="stat card rise" style="--d:.4"><div class="n" data-count="16">16</div><div class="l">Struktur-Blaupausen bewährter Bestseller</div></div>
+        <div class="stat card rise" style="--d:.5"><div class="n" data-count="8">8</div><div class="l">Stilprofile mit Feinreglern</div></div>
+      </div>
+    </div>
+    <div class="art">
+      <svg viewBox="0 0 460 600" id="books" aria-hidden="true"></svg>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 05 EINWÄNDE -->
+<section class="slide" data-name="einwaende" aria-label="Sechs Sätze und unsere Antworten">
+  <div class="head">
+    <div class="kicker rise">Kommt dir bekannt vor?</div>
+    <h2 class="title rise" style="--d:.1">Sechs Sätze. Sechs <em>Antworten.</em></h2>
+  </div>
+  <div class="objs">
+    <div class="obj card rise" style="--d:.2;--i:0"><q>Ich habe eine Idee, aber keine Ahnung, wie man ein Buch aufbaut.</q><div class="tag"><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>16 Struktur-Blaupausen</div></div>
+    <div class="obj card rise" style="--d:.25;--i:1"><q>Ich habe einfach keine Zeit, monatelang zu schreiben.</q><div class="tag"><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>KI-Co-Autor · Kapitel für Kapitel</div></div>
+    <div class="obj card rise" style="--d:.3;--i:2"><q>Mein Buch soll nach mir klingen und nicht nach Maschine.</q><div class="tag"><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Stilprofile &amp; Stilregler</div></div>
+    <div class="obj card rise" style="--d:.35;--i:3"><q>Ab Kapitel 5 verliere ich den roten Faden.</q><div class="tag"><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Übergangs-Engine &amp; World Codex</div></div>
+    <div class="obj card rise" style="--d:.4;--i:4"><q>Ich spreche lieber, als dass ich tippe.</q><div class="tag"><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Audio-Eingabe mit Transkription</div></div>
+    <div class="obj card rise" style="--d:.45;--i:5"><q>Und wie wird daraus ein echtes Buch bei Amazon?</q><div class="tag"><span class="chk"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>KI-Cover &amp; KDP-Export</div></div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 06 ABLAUF -->
+<section class="slide" data-name="ablauf" aria-label="Fünf Schritte zum Buch">
+  <div class="head">
+    <div class="kicker rise">So entsteht dein Buch</div>
+    <h2 class="title rise" style="--d:.1">Fünf Schritte. <em>Ein Buch.</em></h2>
+  </div>
+  <div class="tl">
+    <div class="tl-line"><span class="tl-fill"></span><span class="tl-orb"></span></div>
+    <div class="node" style="--i:0"><div class="no">01</div><div class="dot"></div><div class="what">Idee eingeben</div><div class="sub">Thema, Notizen, Sprachmemo oder Rohtext</div></div>
+    <div class="node" style="--i:1"><div class="no">02</div><div class="dot"></div><div class="what">Genre, Stil &amp; Struktur</div><div class="sub">Blaupause und Stilprofil wählen</div></div>
+    <div class="node" style="--i:2"><div class="no">03</div><div class="dot"></div><div class="what">Gliederung</div><div class="sub">Die KI plant jedes Kapitel mit Ziel</div></div>
+    <div class="node" style="--i:3"><div class="no">04</div><div class="dot"></div><div class="what">Kapitel schreiben</div><div class="sub">Eins nach dem anderen, du hast die Kontrolle</div></div>
+    <div class="node last" style="--i:4"><div class="no">05</div><div class="dot"></div><div class="what">Veröffentlichen</div><div class="sub">PDF, DOCX, EPUB, KDP-fertig</div></div>
+  </div>
+  <div class="claim"><b>Dein KI-Co-Autor</b><i>›</i><span>Alles, was du zum Schreiben brauchst. Deine Idee, Deine Kontrolle, Deine KI bis zum Amazon-Bestseller, in einer App.</span></div>
+  <div class="brandline"><span class="logo"></span></div>
+  <div class="foot">Von der Idee bis zur Datei in einem Werkzeug</div>
+</section>
+<!-- 07 -->
+<section class="slide" data-name="idee" aria-label="Von der Idee zur Gliederung">
+  <div class="split wl">
+    <div class="col">
+      <div class="head">
+        <div class="kicker rise">Schritt 1 bis 3 · Das Fundament</div>
+        <h2 class="title rise" style="--d:.1;font-size:80px">Aus losen Gedanken wird ein <em>Plan</em></h2>
+      </div>
+      <div class="blocks">
+        <div class="blk card span" style="--i:0"><span class="k">Dein Material</span><h3>Alles darf rein</h3><p>Ein Satz, ein Notizzettel, eine Sprachnachricht oder 80 Seiten Rohtext. Dein Original bleibt immer unverändert.</p></div>
+        <div class="blk card" style="--i:1"><span class="k">Buchideen-Check</span><h3>Genre finden</h3><p>Ein kurzes Quiz zeigt, welcher Buchtyp zu deiner Idee passt.</p></div>
+        <div class="blk card" style="--i:2"><span class="k">Gliederung</span><h3>Kapitel mit Ziel</h3><p>Jedes Kapitel bekommt eine Aufgabe im Ganzen.</p></div>
+      </div>
+    </div>
+    <div class="art">
+      <div class="conv" aria-hidden="true">
+        <div class="conv-back"></div>
+        <div class="conv-doc"><span class="dh">Dein Buchkonzept</span><span class="dr"></span></div>
+        <div class="note" style="top:130px;--i:0;--sx:-130px;--sy:-120px;--r:-14deg">Arbeitstitel</div>
+        <div class="note ai" style="top:188px;--i:1;--sx:250px;--sy:-150px;--r:11deg">Genre: Thriller</div>
+        <div class="note" style="top:246px;--i:2;--sx:-190px;--sy:30px;--r:8deg">Blaupause: Heldenreise</div>
+        <div class="note ai" style="top:304px;--i:3;--sx:230px;--sy:10px;--r:-9deg">Stilprofil: spannend, nah</div>
+        <div class="note" style="top:362px;--i:4;--sx:-150px;--sy:150px;--r:-6deg">Figuren &amp; Orte</div>
+        <div class="note" style="top:420px;--i:5;--sx:250px;--sy:140px;--r:13deg">Kapitel 1 bis 12</div>
+        <div class="note ai" style="top:478px;--i:6;--sx:-60px;--sy:210px;--r:5deg">Sprachmemo 03:12</div>
+        <div class="note" style="top:536px;--i:7;--sx:170px;--sy:230px;--r:-12deg">Zielgruppe</div>
+      </div>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+  <div class="foot">Ergebnis: Konzept und Gliederung</div>
+</section>
+<!-- 08 -->
+<section class="slide" data-name="schreiben" aria-label="Kapitel schreiben in deiner Stimme">
+  <div class="split wl">
+    <div class="col">
+      <div class="head">
+        <div class="kicker rise">Schritt 4 · Das Herzstück</div>
+        <h2 class="title rise" style="--d:.1">Kapitel für Kapitel, in <em>deiner Stimme</em></h2>
+      </div>
+      <div class="blocks">
+        <div class="blk card" style="--i:0"><span class="k">KI-Co-Autor</span><h3>Schreibt mit dir</h3><p>Weiter schreiben, neu schreiben oder nur einen Absatz verbessern.</p></div>
+        <div class="blk card" style="--i:1"><span class="k">Audio</span><h3>Einfach erzählen</h3><p>Sprich deine Szene ein. Die KI macht ein Kapitel daraus.</p></div>
+        <div class="blk card span" style="--i:2"><span class="k">Stilregler</span><h3>Ton, Tempo und Nähe fein einstellen</h3><p>So klingt Kapitel 12 genauso wie Kapitel 1.</p></div>
+      </div>
+    </div>
+    <div class="art" style="flex-direction:column;gap:46px">
+      <svg viewBox="0 0 640 330" class="writing" aria-hidden="true">
+        <g transform="translate(20 -30)">
+          <rect class="bar" style="--i:0" x="10" y="170" width="10" height="80" rx="5"/><rect class="bar" style="--i:1" x="28" y="140" width="10" height="140" rx="5"/>
+          <rect class="bar" style="--i:2" x="46" y="120" width="10" height="180" rx="5"/><rect class="bar" style="--i:3" x="64" y="155" width="10" height="110" rx="5"/>
+          <rect class="bar" style="--i:4" x="82" y="100" width="10" height="220" rx="5"/><rect class="bar" style="--i:5" x="100" y="135" width="10" height="150" rx="5"/>
+          <rect class="bar" style="--i:6" x="118" y="165" width="10" height="90" rx="5"/><rect class="bar" style="--i:7" x="136" y="125" width="10" height="170" rx="5"/>
+          <rect class="bar" style="--i:8" x="154" y="150" width="10" height="120" rx="5"/><rect class="bar" style="--i:9" x="172" y="175" width="10" height="70" rx="5"/>
+          <text x="0" y="350" class="t-sub">Deine Stimme</text>
+        </g>
+        <path class="flow" d="M222 180H300"/><path d="M298 170l12 10-12 10" fill="none" stroke="#7a849c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="330" y="20" width="290" height="270" rx="22" fill="#fff" filter="url(#soft)"/>
+        <text x="358" y="60" style="font:800 21px var(--f-display);fill:#102484">Kapitel 7</text>
+        <line class="ink" pathLength="1" style="--i:0" x1="358" y1="94" x2="590" y2="94"/>
+        <line class="ink" pathLength="1" style="--i:1" x1="358" y1="122" x2="576" y2="122"/>
+        <line class="ink" pathLength="1" style="--i:2" x1="358" y1="150" x2="594" y2="150"/>
+        <line class="ink" pathLength="1" style="--i:3" x1="358" y1="178" x2="540" y2="178"/>
+        <line class="ink" pathLength="1" style="--i:4" x1="358" y1="216" x2="588" y2="216"/>
+        <line class="ink" pathLength="1" style="--i:5" x1="358" y1="244" x2="470" y2="244"/>
+        <text x="330" y="322" class="t-sub">Dein Kapitel</text>
+      </svg>
+      <div class="sliders card" aria-hidden="true">
+        <div class="sl"><span class="nm">Ton</span><span class="tr" style="--a:30%;--b:72%;--i:0"><i></i><b></b></span><span class="ends"><span>sachlich</span><span>emotional</span></span></div>
+        <div class="sl"><span class="nm">Tempo</span><span class="tr" style="--a:64%;--b:38%;--i:1"><i></i><b></b></span><span class="ends"><span>ruhig</span><span>rasant</span></span></div>
+        <div class="sl"><span class="nm">Nähe</span><span class="tr" style="--a:46%;--b:82%;--i:2"><i></i><b></b></span><span class="ends"><span>distanziert</span><span>intim</span></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+  <div class="foot">Ergebnis: ein Manuskript mit rotem Faden</div>
+</section>
+<!-- 09 -->
+<section class="slide" data-name="veroeffentlichen" aria-label="Cover und Veröffentlichung">
+  <div class="split wl">
+    <div class="col">
+      <div class="head">
+        <div class="kicker rise">Schritt 5 · Der Gipfel</div>
+        <h2 class="title rise" style="--d:.1">Cover drauf. <em>Raus in die Welt.</em></h2>
+      </div>
+      <div class="blocks">
+        <div class="blk card" style="--i:0"><span class="k">Gestaltung</span><h3>KI-Cover-Designer</h3><p>Dein Cover passend zu Genre und Stimmung.</p></div>
+        <div class="blk card" style="--i:1"><span class="k">Formate</span><h3>PDF, DOCX, EPUB</h3><p>Druckfertig und für jeden E-Reader.</p></div>
+        <div class="blk card" style="--i:2"><span class="k">Amazon</span><h3>KDP-Export</h3><p>Mit Klappentext und Keywords zum Hochladen.</p></div>
+        <div class="blk card" style="--i:3"><span class="k">Sicherheit</span><h3>Versionen &amp; Rollback</h3><p>Jede Änderung lässt sich zurückholen.</p></div>
+      </div>
+    </div>
+    <div class="art">
+      <svg viewBox="0 0 620 480" aria-hidden="true">
+        <defs><clipPath id="cClip"><rect x="60" y="50" width="250" height="350" rx="10"/></clipPath><linearGradient id="gCover" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d58d8"/><stop offset="1" stop-color="#102484"/></linearGradient><linearGradient id="gShine" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".3"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+        <g filter="url(#soft)" class="c-in" style="--d:.3">
+          <rect x="60" y="50" width="250" height="350" rx="10" fill="url(#gCover)"/>
+          <rect x="44" y="56" width="18" height="338" rx="4" fill="#0c1b66"/>
+        </g>
+        <g clip-path="url(#cClip)">
+          <circle class="c-in" style="--d:1.1" cx="250" cy="260" r="115" fill="#15adde" opacity=".85"/>
+          <circle class="c-in" style="--d:1.2" cx="130" cy="330" r="60" fill="#6b38d4" opacity=".7"/>
+          <text class="c-in" style="--d:1.5;font:800 38px var(--f-display);fill:#fff;letter-spacing:-1px" x="88" y="118">Die stille</text>
+          <text class="c-in" style="--d:1.6;font:800 38px var(--f-display);fill:#bfeeff;letter-spacing:-1px" x="88" y="160">Grenze</text>
+          <text class="c-in" style="--d:1.8;font:600 14px var(--f-body);letter-spacing:2px;fill:#fff" x="88" y="376">DEIN NAME</text>
+          <rect class="cover-shine" x="-60" y="40" width="80" height="380" fill="url(#gShine)" transform="skewX(-12)"/>
+        </g>
+        <g class="c-in" style="--d:2"><path d="M330 225H372M372 225C402 225 392 110 422 110M372 225H422M372 225C402 225 392 340 422 340" fill="none" stroke="#b9c3dc" stroke-width="3" stroke-linecap="round"/></g>
+        <g class="chan c-in" style="--d:2.2"><rect x="422" y="84" width="196" height="52" rx="26"/><circle cx="446" cy="110" r="6"/><text x="462" y="117">Amazon KDP</text></g>
+        <g class="chan c-in" style="--d:2.45"><rect x="422" y="199" width="196" height="52" rx="26"/><circle cx="446" cy="225" r="6"/><text x="462" y="232">EPUB · E-Book</text></g>
+        <g class="chan c-in" style="--d:2.7"><rect x="422" y="314" width="196" height="52" rx="26"/><circle cx="446" cy="340" r="6"/><text x="462" y="347">PDF · Druck</text></g>
+        <text x="60" y="450" class="t-sub">Beispiel-Cover</text>
+      </svg>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+  <div class="foot">Ergebnis: veröffentlichungsfertige Dateien</div>
+</section>
+<!-- 10 -->
+<section class="slide" data-name="blaupausen" aria-label="16 Struktur-Blaupausen">
+  <div class="split">
+    <div class="col">
+      <div class="kicker rise">Das Bauwissen der Bestseller</div>
+      <h2 class="title rise" style="--d:.1"><em>16</em> Blaupausen für dein Buch</h2>
+      <p class="lead rise" style="--d:.2">Erfolgreiche Bücher folgen erprobten Bauplänen. Du wählst einen davon, und die KI baut Gliederung und Spannungsbogen danach. <strong>Für Romane, Ratgeber und Fachbücher.</strong></p>
+    </div>
+    <div class="art">
+      <div class="ticker" aria-hidden="true">
+        <div class="lens"></div>
+        <ul id="tickList"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 11 -->
+<section class="slide" data-name="ueberarbeiten" aria-label="Überarbeitungs-Werkzeuge">
+  <div class="split wr">
+    <div class="col">
+      <div class="kicker rise">Feinschliff auf Knopfdruck</div>
+      <h2 class="title rise" style="--d:.1">Ein Satz. Drei <em>Richtungen.</em></h2>
+      <p class="lead rise" style="--d:.2">Klarer, intensiver oder gefühlvoller. Du siehst jede Variante und entscheidest. Dein Original wird nie überschrieben.</p>
+    </div>
+    <div class="art">
+      <div class="edit card rise" style="--d:.3">
+        <div class="tabs" id="edTabs"><span class="tab orig on">Original</span><span class="tab">Klarer</span><span class="tab">Intensiver</span><span class="tab">Gefühlvoller</span></div>
+        <div class="txt" id="edTxt">Sie öffnete die Tür.</div>
+        <div class="note2"><i></i>Original bleibt gespeichert · Rollback jederzeit</div>
+      </div>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 12 -->
+<section class="slide" data-name="ergebnis" aria-label="Was du am Ende in den Händen hältst">
+  <div class="split">
+    <div class="col">
+      <div class="head">
+        <div class="kicker rise">Am Ende des Tages</div>
+        <h2 class="title rise" style="--d:.1">Was du in den <em>Händen</em> hältst</h2>
+      </div>
+      <div class="bars">
+        <div class="hb rise" style="--d:.2"><div class="row"><div class="lbl">Dein vollständiges Manuskript<span>Alle Kapitel, ein roter Faden</span></div><div class="val">Fertig</div></div><div class="track"><i style="--i:0"></i></div></div>
+        <div class="hb rise" style="--d:.3"><div class="row"><div class="lbl">Dein Cover<span>Passend zu Genre und Zielgruppe</span></div><div class="val">Fertig</div></div><div class="track"><i style="--i:1"></i></div></div>
+        <div class="hb rise" style="--d:.4"><div class="row"><div class="lbl">Klappentext &amp; Keywords<span>Für die Buchseite bei Amazon</span></div><div class="val">Fertig</div></div><div class="track"><i style="--i:2"></i></div></div>
+        <div class="hb rise" style="--d:.5"><div class="row"><div class="lbl">PDF, DOCX, EPUB<span>Druck, Word und E-Reader</span></div><div class="val">Fertig</div></div><div class="track"><i style="--i:3"></i></div></div>
+      </div>
+    </div>
+    <div class="art">
+      <div class="scene3d rise" style="--d:.4" aria-hidden="true">
+        <div class="book3d">
+          <div class="b-back"></div><div class="b-spine"></div><div class="b-pages"></div>
+          <div class="b-front"><div class="glow"></div><div class="bt">Dein<br><em>Buch.</em></div><div class="ba">Von dir · 2026</div></div>
+        </div>
+        <div class="shadow3d"></div>
+      </div>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 13 -->
+<section class="slide" data-name="prinzip" aria-label="Schritt für Schritt statt Knopfdruck">
+  <div class="head">
+    <div class="kicker rise">Warum es funktioniert</div>
+    <h2 class="title rise" style="--d:.1">Geführt, Stufe für <em>Stufe</em></h2>
+  </div>
+  <div class="split">
+    <div class="col">
+      <div class="bad card rise" style="--d:.2">
+        <span class="k">So klappt es nicht</span>
+        <div class="prompt">„Schreib mir ein Buch über Management.“</div>
+        <p>Ergebnis im normalen Chat: 200 Seiten, die nach niemandem klingen.</p>
+      </div>
+      <p class="lead rise" style="--d:.35"><b class="brand">bookgenerator.ai</b> führt dich durch klare Stufen. Jede baut auf der vorigen auf, und <strong>auf jeder Stufe entscheidest du.</strong></p>
+    </div>
+    <div class="art">
+      <svg viewBox="0 0 680 420" aria-hidden="true">
+        <path class="step-face" d="M30 390V350H140V296H242V242H344V188H446V134H548V80H660V390Z"/>
+        <line class="tread" style="--i:0" x1="40" y1="350" x2="134" y2="350"/>
+        <line class="tread" style="--i:1" x1="146" y1="296" x2="236" y2="296"/>
+        <line class="tread" style="--i:2" x1="248" y1="242" x2="338" y2="242"/>
+        <line class="tread" style="--i:3" x1="350" y1="188" x2="440" y2="188"/>
+        <line class="tread" style="--i:4" x1="452" y1="134" x2="542" y2="134"/>
+        <line class="tread" style="--i:5" x1="554" y1="80" x2="654" y2="80"/>
+        <text x="88" y="380" text-anchor="middle" class="t-sub">Idee</text>
+        <text x="192" y="326" text-anchor="middle" class="t-sub">Genre</text>
+        <text x="294" y="272" text-anchor="middle" class="t-sub">Stil</text>
+        <text x="396" y="218" text-anchor="middle" class="t-sub">Gliederung</text>
+        <text x="498" y="164" text-anchor="middle" class="t-sub">Kapitel</text>
+        <text x="604" y="110" text-anchor="middle" class="t-lbl">Buch</text>
+        <circle class="hop" r="14"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 14 -->
+<section class="slide" data-name="roter-faden" aria-label="Dein Buchprojekt behält alles im Blick">
+  <div class="split">
+    <div class="col">
+      <div class="head">
+        <div class="kicker rise">Der rote Faden</div>
+        <h2 class="title rise" style="--d:.1">Dein Buch <em>vergisst nichts</em></h2>
+      </div>
+      <p class="lead rise" style="--d:.2">Figuren, Orte, Zeitlinie und Stil liegen an einem Ort. Jedes neue Kapitel kennt alles, was vorher geschah.</p>
+      <div class="setup rise" style="--d:.3">
+        <div><span class="num">01</span><span><strong>World Codex</strong> prüft Figuren und Orte auf Widersprüche.</span></div>
+        <div><span class="num">02</span><span><strong>Übergangs-Engine</strong> verbindet Kapitel zu einem Ganzen.</span></div>
+        <div><span class="num">03</span><span><strong>Deine Inhalte gehören dir.</strong> DSGVO-konform, Made in Germany.</span></div>
+      </div>
+    </div>
+    <div class="art">
+      <div class="proj" aria-hidden="true">
+        <div class="ph">Mein Buch<span class="chip ai" style="font-size:16px;padding:10px 16px">World Codex</span></div>
+        <div class="fchips">
+          <div class="fchip" style="--i:0"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Figuren</div>
+          <div class="fchip" style="--i:1"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>Orte</div>
+          <div class="fchip" style="--i:2"><svg viewBox="0 0 24 24"><path d="M3 12h18M7 8v8M12 6v12M17 9v6"/></svg>Zeitlinie</div>
+          <div class="fchip" style="--i:3"><svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>Stilprofil</div>
+          <div class="fchip" style="--i:4"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Gliederung</div>
+          <div class="fchip" style="--i:5"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Kapitel 1 bis 12</div>
+        </div>
+        <span class="logo" style="height:34px;margin-top:6px"></span>
+      </div>
+    </div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 15 -->
+<section class="slide s-start" data-name="los" aria-label="Fang mit einem Satz an">
+  <div class="kicker rise">Dein erster Schritt</div>
+  <h2 class="title xl rise" style="--d:.1">Ein Satz <em>reicht.</em></h2>
+  <div class="typebox card rise" style="--d:.3">
+    <div class="k"><span class="live"></span>Deine Buchidee</div>
+    <div class="typed"><span id="typed" data-text="Ein Leuchtturmwärter findet in einer Sturmnacht ein Logbuch, das seine eigene Zukunft beschreibt.">Ein Leuchtturmwärter findet in einer Sturmnacht ein Logbuch, das seine eigene Zukunft beschreibt.</span><span class="caret"></span></div>
+    <div class="gen" id="gen"><span class="chip ai">Genre: Mystery</span><span class="chip ai">Blaupause: Seven-Point</span><span class="chip ai">12 Kapitel geplant</span><span class="chip ai">Stil: atmosphärisch</span></div>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+<!-- 16 -->
+<section class="slide s-end" data-name="loslegen" aria-label="Tarife und Start">
+  <div class="head">
+    <div class="kicker rise">Starte heute</div>
+    <h2 class="title rise" style="--d:.1">Kostenlos anfangen.<br><em>Deine Geschichte verdient ein Buch.</em> <span style="color:#000">Leg los.</span></h2>
+  </div>
+  <div class="plans">
+    <div class="plan card rise" style="--d:.2"><span class="nm">Free</span><div class="pr">0 €<small>/ Monat</small></div>
+      <ul><li><span class="box" style="--i:0"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>1 Buchprojekt</li><li><span class="box" style="--i:1"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>3 Kapitel zum Testen</li><li><span class="box" style="--i:2"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Lesen im Browser</li></ul></div>
+    <div class="plan card hot rise" style="--d:.3"><span class="badge">Beliebt</span><span class="nm">Autor</span><div class="pr">29 €<small>/ Monat</small></div>
+      <ul><li><span class="box" style="--i:3"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>2 Bücher pro Monat</li><li><span class="box" style="--i:4"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Unbegrenzte Kapitel</li><li><span class="box" style="--i:5"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>PDF, DOCX, EPUB</li><li><span class="box" style="--i:6"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Audio-Eingabe, alle Stilprofile</li></ul></div>
+    <div class="plan card rise" style="--d:.4"><span class="nm">Pro</span><div class="pr">99 €<small>/ Monat</small></div>
+      <ul><li><span class="box" style="--i:7"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>6 Bücher pro Monat</li><li><span class="box" style="--i:8"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>KDP-Export</li><li><span class="box" style="--i:9"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>KI-Cover-Designer</li><li><span class="box" style="--i:10"><svg viewBox="0 0 24 24"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>World Codex, Prioritäts-Support</li></ul></div>
+  </div>
+  <p class="audience rise" style="--d:.5"><span class="live"></span>Auch ohne Vorwissen: für Anfänger, Fortgeschrittene und Profi-Autoren</p>
+  <div class="endrow rise" style="--d:.6">
+    <a class="cta" href="https://bookgenerator.ai/#preise" target="_blank" rel="noopener">Jetzt kostenlos starten <span>→</span></a>
+    <p>Monatlich kündbar. Keine Mindestlaufzeit. Deine Inhalte gehören dir.</p>
+  </div>
+  <div class="brandline"><span class="logo"></span></div>
+</section>
+</div>
+</div>
+<div class="auto-bar" id="autoBar"></div>
+<div class="prog" id="prog"></div>
+<nav class="ctrl" aria-label="Folien">
+  <button id="prev" aria-label="Vorherige Folie"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <span class="count" id="count">01 / 16</span>
+  <button id="next" aria-label="Nächste Folie"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+  <button id="auto" aria-label="Automatisch abspielen" aria-pressed="false" title="Auto-Play (A)"><svg viewBox="0 0 24 24" id="autoIco"><path d="M7 5l12 7-12 7z"/></svg></button>
+  <button id="clean" aria-label="Steuerung ausblenden für Aufnahme" title="Aufnahme-Modus (H)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></button>
+  <button id="fs" aria-label="Vollbild" title="Vollbild (F)"><svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+</nav>
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var count=document.getElementById('count'),prog=document.getElementById('prog');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cur=0,typer=null,editTimer=null,autoTimer=null,autoOn=false,AUTO_MS=7000;
+  function fit(){var s=Math.min(window.innerWidth/1920,window.innerHeight/1080);stage.style.transform='translate(-50%,-50%) scale('+s+')'}
+  window.addEventListener('resize',fit);fit();
+  var books=document.getElementById('books');
+  if(books){
+    var ns='http://www.w3.org/2000/svg';
+    var g=['Thriller','Roman','Fantasy','Ratgeber','Krimi','Businessbuch','Kinderbuch','Sci-Fi','Biografie','Liebesroman','Fachbuch','Sachbuch','Firmenbuch','Memoir'];
+    var cols=[['#102484','#fff'],['#ffffff','#102484'],['#15adde','#fff'],['#e9ddff','#5516be'],['#1d58d8','#fff'],['#dce9ff','#102484'],['#6b38d4','#fff'],['#7fd0f0','#102484'],['#ffffff','#102484'],['#102484','#fff'],['#bfeeff','#102484'],['#1d58d8','#fff'],['#ffffff','#6b38d4'],['#15adde','#fff']];
+    for(var k=0;k<g.length;k++){
+      var w=280+((k*53)%110),y=560-k*38,x=230-w/2+((k*37)%25-12);
+      var grp=document.createElementNS(ns,'g');grp.setAttribute('class','bk');grp.style.setProperty('--i',k);
+      var r=document.createElementNS(ns,'rect');
+      r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',w);r.setAttribute('height',33);r.setAttribute('rx',6);
+      r.setAttribute('fill',cols[k][0]);r.setAttribute('style','filter:drop-shadow(0 6px 10px rgba(16,36,132,.12))');grp.appendChild(r);
+      var t=document.createElementNS(ns,'text');t.setAttribute('x',x+22);t.setAttribute('y',y+22);t.setAttribute('class','spine-t');t.setAttribute('fill',cols[k][1]);
+      t.textContent=g[k];grp.appendChild(t);books.appendChild(grp);
+    }
+  }
+  var bp=['Heldenreise','Save the Cat','3-Akt-Struktur','Seven-Point-Struktur','MICE-Quotient','Birkenbihl-Methode','World-First','Ratgeber-Framework'];
+  var tl=document.getElementById('tickList');
+  if(tl){var html='';for(var r2=0;r2<2;r2++)for(var b=0;b<bp.length;b++){html+='<li><span>'+String(b+1).padStart(2,'0')+'</span>'+bp[b]+'</li>'}tl.innerHTML=html}
+  if(reduce){[].forEach.call(document.querySelectorAll('animateMotion'),function(a){a.parentNode.removeChild(a)});
+    var mv=document.querySelector('.mover');if(mv){mv.setAttribute('cx',610);mv.setAttribute('cy',82)}}
+  function countUp(el){
+    var target=+el.getAttribute('data-count'),t0=null;
+    if(reduce){el.textContent=target;return}
+    function step(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/1500);el.textContent=Math.round(target*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(step)}
+    el.textContent='0';requestAnimationFrame(step);
+  }
+  function typeIt(el){
+    clearTimeout(typer);var txt=el.getAttribute('data-text');var gen=document.getElementById('gen');
+    gen.classList.remove('show');
+    if(reduce){el.textContent=txt;gen.classList.add('show');return}
+    var n=0;el.textContent='';
+    (function tick(){n++;el.textContent=txt.slice(0,n);if(n<txt.length){typer=setTimeout(tick,txt.charAt(n-1)===','?220:34)}else{typer=setTimeout(function(){gen.classList.add('show')},500)}})();
+  }
+  var variants=['Sie öffnete die Tür.','Lena öffnete die Tür zum Archiv im Keller.','Lena riss die Tür zum Archiv auf. Staub wirbelte ins Licht.','Mit zitternden Händen öffnete Lena die Tür zum Archiv und hielt den Atem an.'];
+  function runEdit(){
+    clearInterval(editTimer);var tabs=document.querySelectorAll('#edTabs .tab'),txt=document.getElementById('edTxt'),i=0;
+    function show(j){[].forEach.call(tabs,function(t,x){t.classList.toggle('on',x===j)});txt.classList.add('out');setTimeout(function(){txt.textContent=variants[j];txt.classList.remove('out')},reduce?0:320)}
+    show(0);if(reduce)return;
+    editTimer=setInterval(function(){i=(i+1)%variants.length;show(i)},1700);
+  }
+  function go(i,noHash){
+    i=(i+slides.length)%slides.length;
+    slides.forEach(function(s){s.classList.remove('active','play')});
+    var s=slides[i];s.classList.add('active');void s.offsetWidth;s.classList.add('play');
+    cur=i;
+    count.textContent=String(i+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+    prog.style.width=((i+1)/slides.length*100)+'%';
+    [].forEach.call(s.querySelectorAll('[data-count]'),countUp);
+    clearTimeout(typer);clearInterval(editTimer);
+    var ty=s.querySelector('#typed');if(ty)typeIt(ty);
+    if(s.querySelector('#edTxt'))runEdit();
+    if(!noHash){try{history.replaceState(null,'','#'+s.getAttribute('data-name'))}catch(e){}}
+    if(autoOn)armAuto();
+  }
+  function next(){go(cur+1)}function prev(){go(cur-1)}
+  var bar=document.getElementById('autoBar'),autoBtn=document.getElementById('auto'),ico=document.getElementById('autoIco');
+  function armAuto(){
+    clearTimeout(autoTimer);bar.style.transition='none';bar.style.width='0';void bar.offsetWidth;
+    bar.style.transition='width '+AUTO_MS+'ms linear';bar.style.width='100%';
+    autoTimer=setTimeout(next,AUTO_MS);
+  }
+  function setAuto(on){
+    autoOn=on;autoBtn.setAttribute('aria-pressed',on?'true':'false');
+    ico.innerHTML=on?'<path d="M8 5v14M16 5v14"/>':'<path d="M7 5l12 7-12 7z"/>';
+    if(on)armAuto();else{clearTimeout(autoTimer);bar.style.transition='none';bar.style.width='0'}
+  }
+  autoBtn.addEventListener('click',function(){setAuto(!autoOn)});
+  document.getElementById('clean').addEventListener('click',function(){document.body.classList.toggle('clean')});
+  document.getElementById('next').addEventListener('click',next);
+  document.getElementById('prev').addEventListener('click',prev);
+  document.getElementById('fs').addEventListener('click',function(){
+    try{if(document.fullscreenElement){document.exitFullscreen()}else{var p=document.documentElement.requestFullscreen();if(p&&p.catch)p.catch(function(){})}}catch(e){}
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.target&&/input|textarea/i.test(e.target.tagName))return;
+    var k=e.key;
+    if(k==='ArrowRight'||k==='ArrowDown'||k==='PageDown'||k===' '){e.preventDefault();next()}
+    else if(k==='ArrowLeft'||k==='ArrowUp'||k==='PageUp'){e.preventDefault();prev()}
+    else if(k==='Home'){go(0)}else if(k==='End'){go(slides.length-1)}
+    else if(k==='f'||k==='F'){document.getElementById('fs').click()}
+    else if(k==='a'||k==='A'){setAuto(!autoOn)}
+    else if(k==='h'||k==='H'||(k==='Escape'&&document.body.classList.contains('clean'))){document.body.classList.toggle('clean')}
+  });
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
+  document.addEventListener('touchend',function(e){if(tx===null)return;var d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50){d<0?next():prev()}tx=null},{passive:true});
+  var start=0,h=(location.hash||'').slice(1);
+  if(h){slides.forEach(function(s,idx){if(s.getAttribute('data-name')===h)start=idx})}
+  go(start,true);
+})();
+</script>
+</body>
+</html>
